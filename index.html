@@ -135,7 +135,7 @@ const GRP=["備考","グループ","カテゴリ","区分","分類","班","ブ�
 const NUM=["番号","No","no","num","id","ID"];
 const SHP=["形","shape","記号","marker"];
 const URLS=["URL","url","Url","リンク","Google","StreetView","SV","sv_url","sv","streetview"];
-/* ▼ 追加：写真列候補（ヘッダ） ▼ */
+/* 写真列候補（ヘッダ） */
 const PHT=["写真","画像","写真ファイル","画像ファイル","photo","image","img"];
 
 function normalizeHeader(s){
@@ -253,7 +253,6 @@ function render(){
   const numK  = findKey(headers,NUM);
   const shpK  = findKey(headers,SHP);
   const urlK  = findKey(headers,URLS);
-  /* ▼ 追加：写真列のキーを取得 ▼ */
   const photoK = findKey(headers,PHT);
 
   layerGroup.clearLayers(); markers=[]; grpColors={};
@@ -298,15 +297,18 @@ function render(){
     const href = mapsHrefForRow({_name:name}, urlK, lat, lng);
     const desc = descK ? (r[descK]??"").toString() : "";
 
-    /* ▼ 追加：写真ファイル名から <img> HTML を作成 ▼
-       - Excel の「写真」列には "yoron1.jpg" のようにファイル名だけ入れておく
-       - 実ファイルは "icons/yoron1.jpg" に置く前提
-    */
+    // 写真リンク（icons/ファイル名 を別タブで開く）
     let photoHtml = "";
     if (photoK) {
       const photoName = (r[photoK] ?? "").toString().trim();
       if (photoName) {
-        photoHtml = `<br><img src="icons/${photoName}" alt="地点写真" style="max-width:160px;height:auto;margin-top:4px;">`;
+        const photoUrl = `icons/${photoName}`;
+        photoHtml = `
+          <br>
+          <a href="${photoUrl}" target="_blank" rel="noopener"
+             style="color:#1976d2;font-weight:700;text-decoration:none;">
+            📷 写真を見る
+          </a>`;
       }
     }
 
